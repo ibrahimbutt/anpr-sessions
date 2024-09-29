@@ -1,0 +1,7 @@
+cp1,cam1,entry,exit,cam2,exit,entry
+cp2,cam3,exit,entry
+
+0,cam2,away,TEST2
+1,cam1,towards,TEST1,cam3,away,TEST3
+2,cam1,away,TEST1,cam2,towards,TEST2
+3,cam3,towards,TEST3

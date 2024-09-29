@@ -15,26 +15,30 @@ public class InputReaderTest {
     private final InputReader inputReader = new InputReader();
 
     @Test
-    void testRead_validFilePath() throws IOException {
-        Path path = Paths.get("src/main/resources/testFile.txt").toAbsolutePath().normalize();
-        Files.write(path, List.of(" test line 1 ", " test line 2 "));
-
+    void shouldReadInputFile() throws IOException {
+        Path path = Paths.get("src/test/resources/001_test_input.txt").toAbsolutePath().normalize();
         List<String> result = inputReader.read(path.toString());
 
-        assertEquals(List.of("test line 1", "test line 2"), result);
-
-        Files.delete(path);
+        assertEquals(List.of(
+                "cp1,cam1,entry,exit,cam2,exit,entry",
+                "cp2,cam3,exit,entry",
+                "",
+                "0,cam2,away,TEST2",
+                "1,cam1,towards,TEST1,cam3,away,TEST3",
+                "2,cam1,away,TEST1,cam2,towards,TEST2",
+                "3,cam3,towards,TEST3"
+        ), result);
     }
 
     @Test
-    void testRead_emptyFileName() {
+    void shouldThrowIOException_whenGivenInvalidFileName() {
         String emptyFileName = "";
 
         assertThrows(IOException.class, () -> inputReader.read(emptyFileName));
     }
 
     @Test
-    void testRead_nonExistingFile() {
+    void shouldThrowIOException_whenFileDoesNotExist() {
         String nonExistingFilePath = "/path/to/nonExistingFile.txt";
 
         assertThrows(IOException.class, () -> inputReader.read(nonExistingFilePath));

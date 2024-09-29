@@ -13,9 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SessionPrinterTest {
 
     @Test
-    void testPrint_SessionsWithValidVrm() {
-        var session1 = new Session("AB12CDF", 0, 2);
-        var session2 = new Session("GH34IJK", 1, 3);
+    void shouldPrintExpectedOut() {
+        var session1 = new Session("TEST2", 0, 2);
+        var session2 = new Session("TEST3", 1, 3);
         List<Session> sessions = Arrays.asList(session1, session2);
 
         var sessionPrinter = new SessionPrinter();
@@ -26,15 +26,15 @@ public class SessionPrinterTest {
 
         String expectedOutput = "0\n" +
                 "1\n" +
-                "2,AB12CDF,0,2\n" +
-                "3,GH34IJK,1,3\n";
+                "2,TEST2,0,2\n" +
+                "3,TEST3,1,3\n";
         assertEquals(expectedOutput, outContent.toString());
     }
 
     @Test
-    void testPrint_SessionsWithIllegalCharactersInVrm() {
-        var session1 = new Session("AB12i1B0", 0, 2);
-        var session2 = new Session("GH34LKB0", 1, 3);
+    void shouldPrintExpectedOutput_whenGivenIllegalVrmCharacter() {
+        var session1 = new Session("TEST1", 0, 2);
+        var session2 = new Session("TESTB", 1, 3);
         List<Session> sessions = Arrays.asList(session1, session2);
 
         var sessionPrinter = new SessionPrinter();
@@ -45,15 +45,15 @@ public class SessionPrinterTest {
 
         String expectedOutput = "0\n" +
                 "1\n" +
-                "2,AB12LLBO,0,2\n" +
-                "3,GH34LKB0,1,3\n";
+                "2,TESTL,0,2\n" +
+                "3,TESTO,1,3\n";
         assertEquals(expectedOutput, outContent.toString());
     }
 
     @Test
-    void testPrint_SessionsWithNullVrm() {
-        var session1 = new Session(null, 0, 2);
-        var session2 = new Session("GH34LJB0", 1, 3);
+    void shouldPrintExpectedOutput_whenGivenMultipleIllegalVrmCharacters() {
+        var session1 = new Session("TEST10", 0, 2);
+        var session2 = new Session("TESTBI", 1, 3);
         List<Session> sessions = Arrays.asList(session1, session2);
 
         var sessionPrinter = new SessionPrinter();
@@ -64,8 +64,8 @@ public class SessionPrinterTest {
 
         String expectedOutput = "0\n" +
                 "1\n" +
-                "2,,0,2\n" +
-                "3,GH34LJB0,1,3\n";
+                "2,TESTLO,0,2\n" +
+                "3,TESTOL,1,3\n";
         assertEquals(expectedOutput, outContent.toString());
     }
 }

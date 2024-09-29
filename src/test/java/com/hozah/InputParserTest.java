@@ -14,38 +14,32 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class InputParserTest {
     @Test
-    public void parse_ShouldThrowException_WhenInputIsNull() {
+    public void shouldThrowIOExceptionWhenGivenIncorrectFormat() {
         InputParser parser = new InputParser();
+        List<String> inputLinesWithoutBlank = List.of("Line 1", "Line 2");
 
-        assertThrows(NullPointerException.class, () -> parser.parse(null));
+        assertThrows(IOException.class, () -> parser.parse(inputLinesWithoutBlank));
     }
 
     @Test
-    public void parse_ShouldThrowException_WhenNoLineBreakFound_InTheInput() {
+    public void shouldReturnListOfCarParks_WhenInputIsValid() throws IOException {
         InputParser parser = new InputParser();
 
-        assertThrows(IOException.class, () -> parser.parse(List.of("Sample Data")));
-    }
-
-    @Test
-    public void parse_ShouldReturnListOfCarParks_WhenInputIsValid() throws IOException {
-        InputParser parser = new InputParser();
-
-        List<String> input = List.of("CP1,cam1,entry,exit", "", "1,cam1,TOWARDS,au8 65k");
+        List<String> input = List.of("cp1,cam1,entry,exit", "", "1,cam1,TOWARDS,AAAA");
         List<CarPark> carParks = parser.parse(input);
 
         assertEquals(1, carParks.size());
         CarPark carPark = carParks.get(0);
 
-        assertEquals("CP1", carPark.id());
+        assertEquals("cp1", carPark.id());
         assertTrue(carPark.hasCameraById("cam1"));
     }
 
     @Test
-    public void parse_ShouldReturnCarPark_WithCorrectCameraDetails_WhenInputIsValid() throws IOException {
+    public void shouldReturnCarPark_WithCorrectCameraDetails_WhenInputIsValid() throws IOException {
         InputParser parser = new InputParser();
 
-        List<String> input = List.of("CP1,cam1,entry,exit", "", "1,cam1,TOWARDS,au8 65k");
+        List<String> input = List.of("cp1,cam1,entry,exit", "", "1,cam1,TOWARDS,AAAA");
         List<CarPark> carParks = parser.parse(input);
 
         List<Camera> cameras = carParks.stream().flatMap(cp -> cp.cameras().stream()).collect(Collectors.toList());
@@ -59,13 +53,16 @@ public class InputParserTest {
     }
 
     @Test
-    public void parse_ShouldReturnCarPark_WithCorrectTrackingRecordDetails_WhenInputIsValid() throws IOException {
+    public void shouldReturnCarPark_WithCorrectTrackingRecordDetails_WhenInputIsValid() throws IOException {
         InputParser parser = new InputParser();
 
-        List<String> input = List.of("CP1,cam1,entry,exit", "", "1,cam1,TOWARDS,au8 65k");
+        List<String> input = List.of("cp1,cam1,entry,exit", "", "1,cam1,TOWARDS,AAAA");
         List<CarPark> carParks = parser.parse(input);
 
-        List<TrackingRecord> trackingRecords = carParks.stream().flatMap(cp -> cp.trackingRecords().stream()).collect(Collectors.toList());
+        List<TrackingRecord> trackingRecords = carParks
+                .stream()
+                .flatMap(cp -> cp.trackingRecords().stream())
+                .collect(Collectors.toList());
 
         assertEquals(1, trackingRecords.size());
         TrackingRecord trackingRecord = trackingRecords.get(0);
@@ -73,6 +70,6 @@ public class InputParserTest {
         assertEquals(1, trackingRecord.tick());
         assertEquals("cam1", trackingRecord.cameraId());
         assertEquals(Direction.TOWARDS, trackingRecord.direction());
-        assertEquals("au8 65k", trackingRecord.vrm());
+        assertEquals("AAAA", trackingRecord.vrm());
     }
 }
